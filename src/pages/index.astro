@@ -8,7 +8,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 const res = await fetch('https://api.thecatapi.com/v1/images/search?breed_ids=ragd');
 let catImageUrl = null;
 if (res.ok) {
-    const data = await res.json();
+    const data = await res.json() as Array<{ url?: string }>;
     catImageUrl = data?.[0]?.url ?? null;
 }
 ---
@@ -39,18 +39,50 @@ if (res.ok) {
     <body>
         <Header />
         <main>
-			<h1>neko</h1>
+            <h1>neko</h1>
             <!-- cat image from API -->
             {catImageUrl ? (
                 <div class="cat-image">
-                    <img src={catImageUrl} alt="Cat image from The Cat API" />
+                    <img id="cat-img" src={catImageUrl} alt="Cat image from The Cat API" />
                 </div>
             ) : (
                 <div class="cat-image">
-                    <p>Unable to load cat image.</p>
+                    <p id="cat-placeholder">Unable to load cat image.</p>
                 </div>
             )}
         </main>
         <Footer />
+
+        <script type="module">
+        // Fetch a new ragdoll image when the site title is clicked
+        const title = document.getElementById('site-title');
+        const container = document.querySelector('.cat-image');
+
+        async function fetchNewCat() {
+          try {
+            const res = await fetch('https://api.thecatapi.com/v1/images/search?breed_ids=ragd');
+            if (!res.ok) return;
+            const data = await res.json();
+            const url = data?.[0]?.url;
+            if (!url) return;
+            let img = document.getElementById('cat-img');
+            if (!img) {
+              img = document.createElement('img');
+              img.id = 'cat-img';
+              container.innerHTML = '';
+              container.appendChild(img);
+            }
+            img.src = url;
+            img.alt = 'Cat image from The Cat API';
+          } catch (err) {
+            console.error('Failed to fetch cat image', err);
+          }
+        }
+
+        title?.addEventListener('click', (e) => {
+          e.preventDefault(); // keep user on page and update image instead
+          fetchNewCat();
+        });
+        </script>
     </body>
 </html>
