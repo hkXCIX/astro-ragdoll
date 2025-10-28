@@ -4,12 +4,13 @@ import { SITE_TITLE } from '../consts';
 ---
 
 <header>
-	<nav>
-		<h2><a id="site-title" href="/">{SITE_TITLE}</a></h2>
-		<div class="internal-links">
-			<HeaderLink href="/">more nekos</HeaderLink>
-		</div>
-	</nav>
+    <nav>
+        <h2><a id="site-title" href="/">{SITE_TITLE}</a></h2>
+        <div class="internal-links">
+            <!-- added id so JS can attach a click listener -->
+            <HeaderLink id="more-nekos" href="/">more nekos</HeaderLink>
+        </div>
+    </nav>
 </header>
 <style>
 	header {

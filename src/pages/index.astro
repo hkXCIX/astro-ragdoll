@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 // Fetch cat image from The Cat API at build/server time
-const res = await fetch('https://api.thecatapi.com/v1/images/search?breed_ids=ragd');
+const res = await fetch('https://api.thecatapi.com/v1/images/search?breed_ids=mcoo,norw,ragd,sibe,birm');
 let catImageUrl = null;
 if (res.ok) {
     const data = await res.json() as Array<{ url?: string }>;
@@ -54,13 +54,14 @@ if (res.ok) {
         <Footer />
 
         <script type="module">
-        // Fetch a new ragdoll image when the site title is clicked
+        // Fetch a new ragdoll image when the site title or "more nekos" link is clicked
         const title = document.getElementById('site-title');
+        const moreNekos = document.getElementById('more-nekos');
         const container = document.querySelector('.cat-image');
 
         async function fetchNewCat() {
           try {
-            const res = await fetch('https://api.thecatapi.com/v1/images/search?breed_ids=ragd');
+            const res = await fetch('https://api.thecatapi.com/v1/images/search?breed_ids=mcoo,norw,ragd,sibe,birm');
             if (!res.ok) return;
             const data = await res.json();
             const url = data?.[0]?.url;
@@ -79,8 +80,14 @@ if (res.ok) {
           }
         }
 
+        // prevent navigation and fetch a new image instead
         title?.addEventListener('click', (e) => {
-          e.preventDefault(); // keep user on page and update image instead
+          e.preventDefault();
+          fetchNewCat();
+        });
+
+        moreNekos?.addEventListener('click', (e) => {
+          e.preventDefault();
           fetchNewCat();
         });
         </script>
